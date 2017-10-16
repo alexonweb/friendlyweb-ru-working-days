@@ -131,7 +131,13 @@ class Calendar extends DateTime {
         
             if ( $this->checkRange($day_number, $this->day) ) {
 
-                return $this->calendar->{$this->month}->{$day_number}->n;
+                $holidayDescr = $this->calendar->{$this->month}->{$day_number}->n;
+
+                if (!$holidayDescr) {
+                    return "Выходной день"; // @todo перделать в MVC вид
+                } else {
+                    return $holidayDescr;
+                }
 
             }
 
@@ -209,7 +215,7 @@ class Calendar extends DateTime {
 
 $vac = new Calendar;
 
-$vac->setDay("2017-02-23");
+$vac->setDay("2017-05-1");
 
 if ( $vac->isHoliday() ) {
     echo "выходной - " . $vac->getHolidayDescription();
