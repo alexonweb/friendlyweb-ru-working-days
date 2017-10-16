@@ -13,6 +13,7 @@ class Calendar extends DateTime {
     private $month;
     private $year;
     private $i18n = array(
+        "error_file" => "Календарь не найден! Проверьте правильно ли указана директория.",
         "holiday" => "Выходной день"
     );
 
@@ -86,7 +87,9 @@ class Calendar extends DateTime {
 
         } else {
 
-            echo "Календарь не найден! Проверьте правильно ли указана директория.";
+            echo $this->i18n['error_file'];
+
+            return false;
 
         }
 
@@ -158,7 +161,7 @@ class Calendar extends DateTime {
 
             if ( !$holidayDescr ) {
 
-                return $this->i18n['holiday']; // @todo перделать в MVC вид
+                return $this->i18n['holiday'];
 
             } else {
 
