@@ -1,9 +1,5 @@
 <?php
 
-// @todo setcalendar если не установлен
-// @todo возвращает рабочий день!!
-
-
 namespace Calendar;
 
 use DateTime;
@@ -16,7 +12,9 @@ class Calendar extends DateTime {
     private $day;
     private $month;
     private $year;
-
+    private $i18n = array(
+        "holiday" => "Выходной день"
+    );
 
     /**
      * Метод сравнивает два числа
@@ -28,128 +26,63 @@ class Calendar extends DateTime {
 
     }
 
-    /* */
-    private function setCalendar() {
-
-        // получаем календарь на текущий год
-        $calendarFile = $this->_calendarDir . $this->year . ".json";
-
-        if ( file_exists( $calendarFile ) ) {
-    
-          $contents = file_get_contents($calendarFile);
-    
-          $obj = json_decode($contents);
-    
-        }
-
-        $this->calendar = $obj;
-
-    }
-
-
-
-    /*
-    * Метод возвращает массив со списком выходных дней для текущего месяца
-    * return array
-    */
-    private function getHolidaysByMonth() {
-
-        $this->setCalendar();
-
-        $current_month = $this->calendar->{$this->month};
-
-        foreach ($current_month as $day_number => $day) {
-
-            $days_range = explode("-", $day_number); // "1-6" диапазон
-
-            if ($days_range[1]) {
-
-                for ($i = $days_range[0]; $i <= $days_range[1]; $i++) {
-
-                    $holidays[] = $i;
-
-                }
-
-            } else {
-
-                $holidays[] = $day_number;
-
-            }
-
-        }
-
-        return $holidays;
-
-    }
-
-
-    /*
-    *
-    *
-    */
+    /**
+     * Метод проверят входит ли в диапазон чисел (Например, "1-5") число
+     * Возвращает boolean
+     */
     private function checkRange ($range, $number) {
 
         $range = explode("-", $range);
 
         if ($range[1]) {
 
-                for ($i = $range[0]; $i <= $range[1]; $i++) {
+            for ($i = $range[0]; $i <= $range[1]; $i++) {
 
-                    /// есть ли число
-                    if ( $this->matchingOfNum($i, $number) ) {
-                        return true;
-                    }
+                /// есть ли число
+                if ( $this->matchingOfNum($i, $number) ) {
 
+                    return true;
                 }
+
+            }
 
         } else {
 
             if ( $this->matchingOfNum($range[0], $number) ) {
+
                 return true;
+
             }
 
         }
 
-
-
     }
-    /*
-    *
-    */
-    private function isRestDay ($preHoliday = false) {
 
-        $this->setCalendar();
+    /**
+     * Метод устаналивает в соотвествии с установленным годом
+     * Возвращает boolean
+     */
+    private function setCalendar() {
 
-        if ($this->calendar) {
+        // Если дата не установлена, устаналиваем сегоднящий день
+        if ( !$this->day || !$this->month || !$this->year ) {
 
-            
-            $current_month = $this->calendar->{$this->month};
+            $this->setDay("now");
 
-            if ($current_month) {
-                foreach ($current_month as $day_number => $day) {
-                    
-                        $zzz = $this->checkRange($day_number, $this->day);
-        
-                        if ($zzz) {
-        
-                            if ( ( $this->calendar->{$this->month}->{$day_number}->rest ) and ( !$preHoliday ) ) {
-        
-        
-                            return true;
-        
-                            }
-        
-                            if ( ( !$this->calendar->{$this->month}->{$day_number}->rest ) and ( $preHoliday ) ) {
-        
-                            return true;
-        
-                            }
-                        }
-                    }
-            }
+        }
 
+        // получаем календарь на текущий год
+        $calendarFile = $this->_calendarDir . $this->year . ".json";
 
+        if ( file_exists( $calendarFile ) ) {
 
+          $contents = file_get_contents($calendarFile);
+
+          $obj = json_decode($contents);
+
+          $this->calendar = $obj;
+
+          return true;
 
         } else {
 
@@ -160,49 +93,34 @@ class Calendar extends DateTime {
     }
 
 
+    /**
+     * Метод проверят выходной день $preHoliday для сокращенного дня
+     * Возвращает boolean
+     */
+    private function isRestDay ($preHoliday = false) {
 
+        if ( $this->setCalendar() ) {
 
-/** */
-    public function setDay($datetime = "now") {
+            if ( $current_month = $this->calendar->{$this->month} ) {
 
-        $datetime = new DateTime($datetime);
+                foreach ( $current_month as $day_number => $day ) {
 
-        $this->day      = $datetime->format("j");
-        $this->month    = $datetime->format("F");
-        $this->year     = $datetime->format("Y");
+                    if ( $this->checkRange($day_number, $this->day) ) {
 
-    }
-/* */
-    public function setCalendarDir($dir) {
-        // установить дирректорую для календарей
-        $this->_calendarDir = $dir;
+                        if ( ( $this->calendar->{$this->month}->{$day_number}->rest ) and ( !$preHoliday ) ) {
 
-    }
+                            return true;
 
-    
+                        }
 
+                        if ( ( !$this->calendar->{$this->month}->{$day_number}->rest ) and ( $preHoliday ) ) {
 
+                            return true;
 
+                        }
 
+                    }
 
-    /*
-    *
-    *
-    */
-    public function getHolidayDescription() {
-
-        $current_month = $this->calendar->{$this->month};
-        
-        foreach ($current_month as $day_number => $day) {
-        
-            if ( $this->checkRange($day_number, $this->day) ) {
-
-                $holidayDescr = $this->calendar->{$this->month}->{$day_number}->n;
-
-                if (!$holidayDescr) {
-                    return "Выходной день"; // @todo перделать в MVC вид
-                } else {
-                    return $holidayDescr;
                 }
 
             }
@@ -212,9 +130,49 @@ class Calendar extends DateTime {
     }
 
 
+    /**
+     * Мето устаналивает дату
+     */
+    public function setDay($datetime = "now") {
+        $datetime = new DateTime($datetime);
+        $this->day      = $datetime->format("j");
+        $this->month    = $datetime->format("F");
+        $this->year     = $datetime->format("Y");
+    }
+
+    /**
+     * Метод устанавливает директорию с калнедарями
+     */
+    public function setCalendarDir($dir) {
+        $this->_calendarDir = $dir;
+    }
+
+    /**
+     * 
+     */
+    public function getHolidayDescription() {
+
+        if ( $this->isHoliday() ) {
+
+            $holidayDescr = $this->calendar->{$this->month}->{$this->day}->n;
+
+            if ( !$holidayDescr ) {
+
+                return $this->i18n['holiday']; // @todo перделать в MVC вид
+
+            } else {
+
+                return $holidayDescr;
+
+            }
+
+        }
+
+    }
+
     /*
     * Метод возвращает выходной день или нет
-    * return boolean
+    * Возвращает boolean
     */
     public function isHoliday() {
 
@@ -222,18 +180,16 @@ class Calendar extends DateTime {
 
     }
 
+    /**
+     * Метод возвращает сокращенный день или нет
+     * Возвращает boolean
+     */
     public function isPreHoliday() {
 
         return $this->isRestDay(true);
 
     }
 
-
-
 }
-
-
-
-
 
 ?>
