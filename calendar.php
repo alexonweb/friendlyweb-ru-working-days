@@ -18,16 +18,6 @@ class Calendar extends DateTime {
     );
 
     /**
-     * Метод сравнивает два числа
-     * Возвращает boolean
-    */
-    private function matchingOfNum($number1, $number2) {
-
-        return ($number1 == $number2) ? true : false;
-
-    }
-
-    /**
      * Метод проверят входит ли в диапазон чисел (Например, "1-5") число
      * Возвращает boolean
      */
@@ -40,7 +30,7 @@ class Calendar extends DateTime {
             for ($i = $range[0]; $i <= $range[1]; $i++) {
 
                 /// есть ли число
-                if ( $this->matchingOfNum($i, $number) ) {
+                if ( $i == $number ) {
 
                     return true;
                 }
@@ -49,7 +39,7 @@ class Calendar extends DateTime {
 
         } else {
 
-            if ( $this->matchingOfNum($range[0], $number) ) {
+            if ( $range[0] == $number ) {
 
                 return true;
 
