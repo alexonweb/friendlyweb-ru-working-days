@@ -128,7 +128,7 @@ class Calendar extends DateTime {
 
 
     /**
-     * Мето устаналивает дату
+     * Метод устаналивает дату
      */
     public function setDay($datetime = "now") {
         $datetime = new DateTime($datetime);
