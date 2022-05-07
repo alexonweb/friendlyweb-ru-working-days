@@ -1,9 +1,5 @@
 <?php
 
-/***
- * @todo добавить мультиязыковую поддержку
- */
-
 namespace Calendar;
 
 use DateTime;
