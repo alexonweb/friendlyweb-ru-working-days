@@ -1,10 +1,10 @@
 <?php
 
-namespace Calendar;
+namespace FriendlyWeb;
 
 use DateTime;
 
-class Calendar extends DateTime {
+class WorkingDays extends DateTime {
 
     // где лежат все календари в формате JSON
     private $_calendarDir = "data" . DIRECTORY_SEPARATOR . "russian" . DIRECTORY_SEPARATOR; 
@@ -24,6 +24,8 @@ class Calendar extends DateTime {
     private function checkRange ($range, $number) {
 
         $range = explode("-", $range);
+
+        $range[1] = isset($range[1]) ?? null;
 
         if ($range[1]) {
 
@@ -126,7 +128,8 @@ class Calendar extends DateTime {
     /**
      * Метод устаналивает дату
      */
-    public function setDay($datetime = "now") {
+    public function setDay($datetime = 'NOW') 
+    {
         $datetime = new DateTime($datetime);
         $this->day      = $datetime->format("j");
         $this->month    = $datetime->format("F");
@@ -136,7 +139,8 @@ class Calendar extends DateTime {
     /**
      * Метод устанавливает директорию с калнедарями
      */
-    public function setCalendarDir($dir) {
+    public function setCalendarDir($dir) 
+    {
         $this->_calendarDir = $dir;
     }
 
@@ -147,7 +151,7 @@ class Calendar extends DateTime {
 
         if ( $this->isHoliday() ) {
 
-            $holidayDescr = $this->calendar->{$this->month}->{$this->day}->n;
+            $holidayDescr = $this->getDescriptionInRange();
 
             if ( !$holidayDescr ) {
 
@@ -156,6 +160,28 @@ class Calendar extends DateTime {
             } else {
 
                 return $holidayDescr;
+
+            }
+
+        }
+
+    }
+
+    /**
+     * Возвращает описание выходного дня в диапазоне дат (например, "7-8")
+     */
+    private function getDescriptionInRange()
+    {
+
+        $month = (array)$this->calendar->{$this->month};
+
+        foreach ($month as $days => $obj) {
+
+            if ($this->checkRange($days, $this->day)) {
+
+                return $obj->n;
+
+                break;
 
             }
 

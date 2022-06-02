@@ -7,46 +7,54 @@
 
 ### Подключение обработчика
 
-*Подключаем* **class Calendar** 
+*Определяем* **class WorkingDays** 
 
-<pre>
-namespace Calendar;
+```
+require 'FriendlyWeb/WorkingDays/WorkingDays.php';
 
-include_once('calendar.php');
-
-$calendar = new Calendar;
-</pre>
+$workingdays = new FriendlyWeb\WorkingDays();
+```
 
 ### Методы
 
 #### Установка даты
 
-`setDay( *string $format [, int $timestamp = time() ]* )`
+```
+setDay( *string $format [, int $timestamp = time() ]* )
+```
 
-Дата *$format* устанавливается в формате `date` PHP. Например, `$calendar->setDay("2017-02-22");`
+Дата *$format* устанавливается в формате `date` PHP. Например, `$workingdays->setDay("2022-03-08");`
 По-умолчанию устанавливается сегоднящний день.
 
 #### Установка директории календарей
 
-`setCalendarDir( string $dir )`
+```
+setCalendarDir( string $dir )
+```
 
 По-умолчанию директория установлена как `./data/russian/`.
 
 #### Проверяем праздник
 
-`$calendar->isHoliday()`
+```
+isHoliday()
+```
 
 Метод возвращает `true`, если в установленный день (*setDay*) есть праздник.
 
 #### Проверяем сокращенный день
 
-`$calendar->isPreHoliday()`
+```
+isPreHoliday()
+```
 
 Метод возвращает `true`, если установленный день (*setDay*) сокращен на час.
 
 #### Описание праздника
 
-`getHolidayDescription()`
+```
+getHolidayDescription()
+```
 
 Возвращает *string* для установленной даты. Если данные о названии праздника отсутствуют, метод возвращает фразу "*Выходной день*".
 
@@ -56,49 +64,48 @@ $calendar = new Calendar;
 
 ### Сегоднящний день
 
-<pre>
-echo "Сегодня ";
+```
+echo 'Сегодня ';
 
-if ( $calendar->isHoliday() ) {
+if ( $workingdays->isHoliday() ) {
 
-    echo "выходной (" . $calendar->getHolidayDescription() . ")";
+    echo "выходной (" . $workingdays->getHolidayDescription() . ")";
 
-} elseif ( $calendar->isPreHoliday() ) {
+} elseif ( $workingdays->isPreHoliday() ) {
 
     echo "сокращенный день";
 
 } else {
 
     echo "рабочий день";
+
 }
-</pre>
+```
 
 ### Точная дата
 
-<pre>
-$calendar->setDay("2017-02-23");
+```
+$workingdays->setDay('2022-03-08'); // Устанавливаем дату
 
-echo "23 февраля, 2017 ";
+echo '8 марта, 2022 - ';
 
-if ( $calendar->isHoliday() ) {
+if ( $workingdays->isHoliday() ) {
 
-    echo "выходной (" . $calendar->getHolidayDescription() . ")";
+    echo 'выходной (' . $workingdays->getHolidayDescription() . ')';
 
-} elseif ( $calendar->isPreHoliday() ) {
+} elseif ( $workingdays->isPreHoliday() ) {
 
-    echo "сокращенный день";
+    echo 'сокращенный день';
 
 } else {
 
-    echo "рабочий день";
+    echo 'рабочий день';
 
 }
-</pre>
+```
 
 
 ## Календарь в формате JSON 
-
-> 
 
 Календари могут хранится в любой директории. Для установки директории используйте метод `setCalendarDir()`.
 
@@ -107,7 +114,7 @@ if ( $calendar->isHoliday() ) {
 
 ### Пример формата календаря 
 
-<pre>
+```
 {
     "January": 
     {
@@ -126,7 +133,7 @@ if ( $calendar->isHoliday() ) {
     }
 
 }
-</pre>
+```
 
 Месяц записывается в формате PHP date `date("F");` (*от January до December*).
 
