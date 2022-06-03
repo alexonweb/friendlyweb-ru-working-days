@@ -7,9 +7,9 @@
 
 // Подключаем каледарь
 
-require 'FriendlyWeb/WorkingDays/WorkingDays.php';
+require 'FriendlyWeb/WorkingDays/Calendar/Calendar.php';
 
-$workingdays = new FriendlyWeb\WorkingDays\Calendar();
+$workingdays = new FriendlyWeb\Calendar();
 
 $workingdays->setCalendarDir("FriendlyWeb/WorkingDays/data/russian/"); // если директория с календарями измененна
 
