@@ -1,10 +1,14 @@
 <?php
-
-namespace FriendlyWeb;
+/**
+ * Alexander Dalle
+ * dalle@criptext.com
+ * 
+ */
+namespace FriendlyWeb\WorkingDays;
 
 use DateTime;
 
-class WorkingDays extends DateTime {
+class Calendar extends DateTime {
 
     // где лежат все календари в формате JSON
     private $_calendarDir = "data" . DIRECTORY_SEPARATOR . "russian" . DIRECTORY_SEPARATOR; 

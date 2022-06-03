@@ -9,7 +9,7 @@
 
 require 'FriendlyWeb/WorkingDays/WorkingDays.php';
 
-$workingdays = new FriendlyWeb\WorkingDays();
+$workingdays = new FriendlyWeb\WorkingDays\Calendar();
 
 $workingdays->setCalendarDir("FriendlyWeb/WorkingDays/data/russian/"); // если директория с календарями измененна
 
