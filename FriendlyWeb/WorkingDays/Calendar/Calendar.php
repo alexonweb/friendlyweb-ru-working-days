@@ -4,18 +4,20 @@
  * dalle@criptext.com
  * 
  */
-namespace FriendlyWeb\WorkingDays;
+
+namespace FriendlyWeb;
 
 use DateTime;
 
-class Calendar extends DateTime {
+class Calendar extends DateTime 
+{
 
     // где лежат все календари в формате JSON
     private $_calendarDir = "data" . DIRECTORY_SEPARATOR . "russian" . DIRECTORY_SEPARATOR; 
-    private $_calendar;
-    private $day;
-    private $month;
-    private $year;
+    private $_calendar = null;
+    private $day = null;
+    private $month = null;
+    private $year = null;
     private $i18n = array(
         "error_file" => "Календарь не найден! Проверьте правильно ли указана директория.",
         "holiday" => "Выходной день"
@@ -25,27 +27,29 @@ class Calendar extends DateTime {
      * Метод проверят входит ли в диапазон чисел (Например, "1-5") число
      * Возвращает boolean
      */
-    private function checkRange ($range, $number) {
+    private function checkRange($range, $number)
+    {
 
-        $range = explode("-", $range);
+        $range = explode('-', $range);
 
-        $range[1] = isset($range[1]) ?? null;
+        $range[1] = isset($range[1]) ?: null;
 
         if ($range[1]) {
 
             for ($i = $range[0]; $i <= $range[1]; $i++) {
 
                 /// есть ли число
-                if ( $i == $number ) {
+                if ($i == $number) {
 
                     return true;
+
                 }
 
             }
 
         } else {
 
-            if ( $range[0] == $number ) {
+            if ($range[0] == $number) {
 
                 return true;
 
@@ -59,10 +63,11 @@ class Calendar extends DateTime {
      * Метод устаналивает в соотвествии с установленным годом
      * Возвращает boolean
      */
-    private function setCalendar() {
+    private function setCalendar() 
+    {
 
         // Если дата не установлена, устаналиваем сегоднящий день
-        if ( !$this->day || !$this->month || !$this->year ) {
+        if (!$this->day || !$this->month || !$this->year) {
 
             $this->setDay("now");
 
@@ -71,7 +76,7 @@ class Calendar extends DateTime {
         // получаем календарь на текущий год
         $calendarFile = $this->_calendarDir . $this->year . ".json";
 
-        if ( file_exists( $calendarFile ) ) {
+        if (file_exists($calendarFile)) {
 
           $contents = file_get_contents($calendarFile);
 
@@ -96,23 +101,24 @@ class Calendar extends DateTime {
      * Метод проверят выходной день $preHoliday для сокращенного дня
      * Возвращает boolean
      */
-    private function isRestDay ($preHoliday = false) {
+    private function isRestDay($preHoliday = false) 
+    {
 
-        if ( $this->setCalendar() ) {
+        if ($this->setCalendar()) {
 
-            if ( $current_month = $this->calendar->{$this->month} ) {
+            if ($current_month = $this->calendar->{$this->month}) {
 
-                foreach ( $current_month as $day_number => $day ) {
+                foreach ($current_month as $day_number => $day) {
 
-                    if ( $this->checkRange($day_number, $this->day) ) {
+                    if ($this->checkRange($day_number, $this->day)) {
 
-                        if ( ( $this->calendar->{$this->month}->{$day_number}->rest ) and ( !$preHoliday ) ) {
+                        if (($this->calendar->{$this->month}->{$day_number}->rest) and (!$preHoliday)) {
 
                             return true;
 
                         }
 
-                        if ( ( !$this->calendar->{$this->month}->{$day_number}->rest ) and ( $preHoliday ) ) {
+                        if ((!$this->calendar->{$this->month}->{$day_number}->rest) and ($preHoliday)) {
 
                             return true;
 
@@ -128,16 +134,15 @@ class Calendar extends DateTime {
 
     }
 
-
     /**
      * Метод устаналивает дату
      */
     public function setDay($datetime = 'NOW') 
     {
         $datetime = new DateTime($datetime);
-        $this->day      = $datetime->format("j");
-        $this->month    = $datetime->format("F");
-        $this->year     = $datetime->format("Y");
+        $this->day = $datetime->format("j");
+        $this->month = $datetime->format("F");
+        $this->year = $datetime->format("Y");
     }
 
     /**
@@ -151,13 +156,14 @@ class Calendar extends DateTime {
     /**
      * 
      */
-    public function getHolidayDescription() {
+    public function getHolidayDescription() 
+    {
 
-        if ( $this->isHoliday() ) {
+        if ($this->isHoliday()) {
 
             $holidayDescr = $this->getDescriptionInRange();
 
-            if ( !$holidayDescr ) {
+            if (!$holidayDescr) {
 
                 return $this->i18n['holiday'];
 
@@ -197,7 +203,8 @@ class Calendar extends DateTime {
     * Метод возвращает выходной день или нет
     * Возвращает boolean
     */
-    public function isHoliday() {
+    public function isHoliday()
+    {
 
         return $this->isRestDay(false);
 
@@ -207,7 +214,8 @@ class Calendar extends DateTime {
      * Метод возвращает сокращенный день или нет
      * Возвращает boolean
      */
-    public function isPreHoliday() {
+    public function isPreHoliday()
+    {
 
         return $this->isRestDay(true);
 
