@@ -19,11 +19,11 @@ $workingdays->setCalendarDir("FriendlyWeb/WorkingDays/data/russian/"); // есл
 
 echo 'Сегодня ';
 
-if ( $workingdays->isHoliday() ) {
+if ($workingdays->isHoliday()) {
 
     echo 'выходной (' . $workingdays->getHolidayDescription() . ')';
 
-} elseif ( $workingdays->isPreHoliday() ) {
+} elseif ($workingdays->isPreHoliday()) {
 
     echo 'сокращенный день';
 
@@ -44,11 +44,11 @@ $workingdays->setDay($date); // Устанавливаем дату
 
 echo '8 марта, 2022 - ';
 
-if ( $workingdays->isHoliday() ) {
+if ($workingdays->isHoliday()) {
 
     echo 'выходной (' . $workingdays->getHolidayDescription() . ')';
 
-} elseif ( $workingdays->isPreHoliday() ) {
+} elseif ($workingdays->isPreHoliday()) {
 
     echo 'сокращенный день';
 
@@ -57,8 +57,4 @@ if ( $workingdays->isHoliday() ) {
     echo 'рабочий день';
 
 }
-
-
-
-
 ?>
