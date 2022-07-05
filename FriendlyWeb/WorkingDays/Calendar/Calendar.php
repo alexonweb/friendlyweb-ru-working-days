@@ -38,7 +38,6 @@ class Calendar extends DateTime
 
             for ($i = $range[0]; $i <= $range[1]; $i++) {
 
-                /// есть ли число
                 if ($i == $number) {
 
                     return true;
@@ -66,14 +65,12 @@ class Calendar extends DateTime
     private function setCalendar() 
     {
 
-        // Если дата не установлена, устаналиваем сегоднящий день
         if (!$this->day || !$this->month || !$this->year) {
 
             $this->setDay("now");
 
         }
 
-        // получаем календарь на текущий год
         $calendarFile = $this->_calendarDir . $this->year . ".json";
 
         if (file_exists($calendarFile)) {
