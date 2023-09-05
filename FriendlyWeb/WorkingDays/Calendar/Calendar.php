@@ -13,8 +13,8 @@ class Calendar extends DateTime
 {
 
     // где лежат все календари в формате JSON
-    private $_calendarDir = "data" . DIRECTORY_SEPARATOR . "russian" . DIRECTORY_SEPARATOR; 
-    private $_calendar = null;
+    private $_calendarDir = "data" . DIRECTORY_SEPARATOR . "russian" . DIRECTORY_SEPARATOR;
+    private $calendar = null;
     private $day = null;
     private $month = null;
     private $year = null;
@@ -22,6 +22,8 @@ class Calendar extends DateTime
         "error_file" => "Календарь не найден! Проверьте правильно ли указана директория.",
         "holiday" => "Выходной день"
     );
+
+
 
     /**
      * Метод проверят входит ли в диапазон чисел (Например, "1-5") число
@@ -103,7 +105,7 @@ class Calendar extends DateTime
 
         if ($this->setCalendar()) {
 
-            if ($current_month = $this->calendar->{$this->month}) {
+            if ( (isset( $this->calendar->{$this->month} )) && ($current_month = $this->calendar->{$this->month}) ) {
 
                 foreach ($current_month as $day_number => $day) {
 
