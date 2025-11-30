@@ -34,7 +34,7 @@ class Calendar extends DateTime
 
         $range = explode('-', $range);
 
-        $range[1] = isset($range[1]) ?: null;
+        $range[1] = $range[1] ?? null;
 
         if ($range[1]) {
 
